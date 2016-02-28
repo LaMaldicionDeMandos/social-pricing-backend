@@ -1,0 +1,24 @@
+{
+  "name": "social-pricing",
+  "version": "0.0.1",
+  "description": "Social Pricing Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.13.3"
+  },
+  "engines": {
+    "node": "0.12.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LaMaldicionDeMandos/social-pricing-android"
+  },
+  "keywords": [
+    "node",
+    "express"
+  ],
+  "license": "MIT"
+}
