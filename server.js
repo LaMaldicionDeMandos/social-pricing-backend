@@ -1,3 +1,8 @@
+var fs = require('fs');
+var xnconfig = require('nodejsconfig');
+var data = fs.readFileSync(__dirname+'/config/config.properties', 'UTF8');
+config = xnconfig.parse(process.env.NODE_ENV || 'development', data);
+console.log("Env: " + config.env);
 var express = require('express');
 var app = express();
 
