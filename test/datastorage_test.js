@@ -41,8 +41,9 @@ var esMock = {
                                     _id: "1",
                                     _score: 1,
                                     _source: {
-                                        name: "Crrefour",
+                                        name: "Carrefour",
                                         address: "Av. La plata 15555",
+                                        nomalizedAddress: 'av. La Plata 15555',
                                         locale: "Quilmes Oeste",
                                         lat: -34.1667,
                                         lon: -58.1144
@@ -80,7 +81,7 @@ describe('Data Storage', function() {
                shouldFail = true;
            });
            it('should fail to', function() {
-               db.saveMarket({}).then(
+               return db.saveMarket({}).then(
                    function() {
                        assert.ok(false);
                    },
@@ -95,9 +96,9 @@ describe('Data Storage', function() {
                 shouldFail = false;
             });
             it('should save and return the market with id', function() {
-                db.saveMarket({}).then(
+                return db.saveMarket({}).then(
                     function(market) {
-                        market.should.have.property('id', '1');
+                        market.should.have.property('id');
                     },
                     function() {
                         assert.ok(false);
@@ -107,20 +108,49 @@ describe('Data Storage', function() {
         });
     });
     describe('Searching markets', function() {
+        beforeEach(function() {
+           shouldFail = true;
+        });
         describe('When fail db', function() {
             it('should reject the promise in all queries', function() {
-
+                db.searchMarketByName('').then(
+                    function() {assert.ok(false);},
+                    function(error) { assert.equal(error, 'error');}
+                );
+                db.searchMarketByAddress('', '').then(
+                    function() {assert.ok(false);},
+                    function(error) { assert.equal(error, 'error');}
+                );
+                db.searchMarketByGeo(0, 0).then(
+                    function() {assert.ok(false);},
+                    function(error) { assert.equal(error, 'error');}
+                );
             });
         });
         describe('When success', function() {
+            beforeEach(function(){shouldFail = false;});
             describe('And it return some result', function() {
+                beforeEach(function(){shouldReturnSome = true;});
                 it('shoult success and return an array', function() {
-
+                    return db.searchMarketByName('name').then(
+                        function(markets) {
+                            assert.equal(markets[0].id, '1');
+                            assert.equal(markets[0].name, 'Carrefour');
+                            assert.equal(markets[0].address, 'Av. La plata 15555');
+                            assert.equal(markets[0].nomalizedAddress, 'av. La plata 15555');
+                            assert.equal(markets[0].lat, -34.1667);
+                            assert.equal(markets[0].lon, -58.1144);
+                        }, function(error) { assert.ok(false);}
+                    );
                 });
             });
             describe('And it not return result', function() {
                 it('should success and return an empty list', function() {
-
+                    return db.searchMarketByName('name').then(
+                        function(markets) {
+                            assert.equal(markets, []);
+                        }, function(error) { assert.ok(false);}
+                    );
                 });
             })
         });

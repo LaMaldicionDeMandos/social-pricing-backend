@@ -16,6 +16,16 @@ function DB(esClient) {
             });
         return def.promise;
     };
+    this.searchMarketByName = function(name) {
+        return null;
+    };
+    this.searchMarketByAddress = function(address, locale) {
+        return null;
+    };
+    this.searchMarketByGeo = function(lat, lon) {
+        return null;
+    };
+
 }
 
 module.exports = DB;
