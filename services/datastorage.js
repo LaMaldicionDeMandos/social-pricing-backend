@@ -4,7 +4,45 @@
 var Market = require('../model/model').Market;
 var q = require('q');
 var uuid = require('uuid');
+
+
 function DB(esClient) {
+    var marketSchema = {
+        index: 'market',
+        body: {
+            mappings: {
+                Market: {
+                    properties: {
+                        id: {
+                            type: 'string',
+                            index: "not_analyzed"
+                        },
+                        name: {
+                            type: 'string',
+                            index: "not_analyzed"
+                        },
+                        address: {
+                            type: 'string',
+                            index: "not_analyzed"
+                        },
+                        normalizedAddress: {
+                            type: 'string',
+                            index: "not_analyzed"
+                        },
+                        locale: {
+                            type: 'string',
+                            index: "not_analyzed"
+                        },
+                        geo: {
+                            type: 'geo_point',
+                            index: "not_analyzed"
+                        }
+                    }
+                }
+            }
+        }
+    };
+    esClient.indices.create(marketSchema);
     var mapResults = function(results) {
         return results.hits.hits.map(function(hit) {
             var dto = hit._source;
@@ -98,13 +136,17 @@ function DB(esClient) {
             index: 'market',
             body: {
                 query: {
-                    match_all: {},
-                    filter: {
-                        geo_distance: {
-                            distance: '100m',
-                            geo: {
-                                lat: lat,
-                                lon: lon
+                    bool: {
+                        must: {
+                            match_all: {}
+                        },
+                        filter: {
+                            geo_distance: {
+                                distance: '100m',
+                                geo: {
+                                    lat: lat,
+                                    lon: lon
+                                }
                             }
                         }
                     }

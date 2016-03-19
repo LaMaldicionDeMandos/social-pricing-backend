@@ -55,6 +55,17 @@ app.get('/market/address', function(req, res) {
     ) ;
 });
 
+app.get('/market/geo', function(req, res) {
+    db.searchMarketByGeo(req.query.lat, req.query.lon).then(
+        function(data) {
+            res.send(data);
+        },
+        function(error) {
+            res.status(400).send(error);
+        }
+    ) ;
+});
+
 var server = http.createServer(app);
 server.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'));
