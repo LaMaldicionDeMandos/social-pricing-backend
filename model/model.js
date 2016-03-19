@@ -7,6 +7,7 @@ function Market(dto) {
     this.address = dto.address;
     this.nomalizedAddress = dto.normalizedAddress;
     this.locale = dto.locale;
-    this.lat = dto.lat;
-    this.lon = dto.lon;
+    this.geo = dto.geo;
 }
+
+exports.Market = Market;
