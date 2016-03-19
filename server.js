@@ -4,7 +4,8 @@ var xnconfig = require('nodejsconfig');
 var data = fs.readFileSync(__dirname+'/config/config.properties', 'UTF8');
 config = xnconfig.parse(process.env.NODE_ENV || 'development', data);
 console.log("Env: " + config.env);
-var db = new (require('./services/datastorage'))(config.elastic_host);
+var esClient = new es.Client({host: config.elastic_host, log:'info'});
+var db = new (require('./services/datastorage'))(esClient);
 var express = require('express');
 var app = express(),
     bodyParser = require('body-parser'),

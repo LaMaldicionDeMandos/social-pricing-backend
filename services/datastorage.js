@@ -1,11 +1,9 @@
 /**
  * Created by boot on 3/18/16.
  */
-var es = require('elasticsearch');
 var q = require('q');
 
-function DB(host) {
-    var esClient = new es.Client({host: host, log:'info'});
+function DB(esClient) {
     this.saveMarket = function(market) {
         var def = q.defer();
         esClient.create({index: 'market', type: 'Market', id: '1', body: market}).then(
