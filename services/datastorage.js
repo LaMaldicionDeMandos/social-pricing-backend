@@ -52,24 +52,34 @@ function DB(esClient) {
     };
     this.searchMarketByAddress = function(address, locale) {
         var def = q.defer();
+        var normalized = Market.normalizeAddress(address);
         var query = {
             index: 'market',
             body: {
                 query: {
-                    match: {
-                        normalizedAddress: {
-                            query: address,
-                            fuzziness: "AUTO",
-                            operator: 'and'
-                        }
-                    },
-                    match: {
-                        locale: {
-                            query: locale,
-                            fuzziness: "AUTO",
-                            operator: 'and'
-                        }
+                    bool: {
+                        must: [
+                            {
+                                match: {
+                                    normalizedAddress: {
+                                        query: normalized,
+                                        fuzziness: "AUTO",
+                                        operator: 'and'
+                                    }
+                                }
+                            },
+                            {
+                                match: {
+                                    locale: {
+                                        query: locale,
+                                        fuzziness: "AUTO",
+                                        operator: 'and'
+                                    }
+                                }
+                            }
+                        ]
                     }
+
                 }
             }
         };

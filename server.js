@@ -33,6 +33,27 @@ app.post('/market', function(req, res) {
       res.status(201).send(data);
   });
 });
+app.get('/market/name/:name', function(req, res) {
+  db.searchMarketByName(req.params.name).then(
+      function(data) {
+          res.send(data);
+      },
+      function(error) {
+          res.status(400).send(error);
+      }
+  ) ;
+});
+
+app.get('/market/address', function(req, res) {
+    db.searchMarketByAddress(req.query.address, req.query.locale).then(
+        function(data) {
+            res.send(data);
+        },
+        function(error) {
+            res.status(400).send(error);
+        }
+    ) ;
+});
 
 var server = http.createServer(app);
 server.listen(app.get('port'), function () {
