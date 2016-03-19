@@ -8,13 +8,14 @@ function DB(esClient) {
     var mapResults = function(results) {
         return results.hits.hits.map(function(hit) {
             var dto = hit._source;
-            dto.id = hit._id;
             return new Market(dto);
         });
     }
-    this.saveMarket = function(market) {
+    this.saveMarket = function(dto) {
         var def = q.defer();
-        esClient.create({index: 'market', type: 'Market', id: uuid.v4(), body: market}).then(
+        dto.id = uuid.v4();
+        var market = new Market(dto);
+        esClient.create({index: 'market', type: 'Market', id: market.id, body: market}).then(
             function(result) {
                 market.id = result._id;
                 def.resolve(market);

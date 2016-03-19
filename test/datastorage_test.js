@@ -41,6 +41,7 @@ var esMock = {
                                     _id: "1",
                                     _score: 1,
                                     _source: {
+                                        id: "1",
                                         name: "Carrefour",
                                         address: "Av. La Plata 15555",
                                         normalizedAddress: 'av. La Plata 15555',
@@ -83,7 +84,7 @@ describe('Data Storage', function() {
                shouldFail = true;
            });
            it('should fail to', function() {
-               return db.saveMarket({}).then(
+               return db.saveMarket({address: ''}).then(
                    function() {
                        assert.ok(false);
                    },
@@ -98,7 +99,7 @@ describe('Data Storage', function() {
                 shouldFail = false;
             });
             it('should save and return the market with id', function() {
-                return db.saveMarket({}).then(
+                return db.saveMarket({address:''}).then(
                     function(market) {
                         market.should.have.property('id');
                     },

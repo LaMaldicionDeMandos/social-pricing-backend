@@ -29,7 +29,9 @@ app.get('/', function(req, res) {
 //Pruebas
 app.post('/market', function(req, res) {
   var market = req.body;
-  db.saveMarket(market);
+  db.saveMarket(market).then(function(data) {
+      res.status(201).send(data);
+  });
 });
 
 var server = http.createServer(app);
