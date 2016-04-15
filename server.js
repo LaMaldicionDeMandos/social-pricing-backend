@@ -6,6 +6,7 @@ config = xnconfig.parse(process.env.NODE_ENV || 'development', data);
 console.log("Env: " + config.env);
 var esClient = new es.Client({host: config.elastic_host, log:'info'});
 var db = new (require('./services/datastorage'))(esClient);
+var marketService = new (require('./services/market_service'))(db);
 var express = require('express');
 var app = express(),
     bodyParser = require('body-parser'),
@@ -34,7 +35,7 @@ app.post('/market', function(req, res) {
   });
 });
 app.get('/market/name/:name', function(req, res) {
-  db.searchMarketByName(req.params.name).then(
+  marketService.searchByName(req.params.name).then(
       function(data) {
           res.send(data);
       },
@@ -45,7 +46,7 @@ app.get('/market/name/:name', function(req, res) {
 });
 
 app.get('/market/address', function(req, res) {
-    db.searchMarketByAddress(req.query.address, req.query.locale).then(
+    marketService.searchByAddress(req.query.address, req.query.locale).then(
         function(data) {
             res.send(data);
         },
@@ -56,7 +57,7 @@ app.get('/market/address', function(req, res) {
 });
 
 app.get('/market/geo', function(req, res) {
-    db.searchMarketByGeo(req.query.lat, req.query.lon).then(
+    marketService.searchByGeo(req.query.lat, req.query.lon).then(
         function(data) {
             res.send(data);
         },
