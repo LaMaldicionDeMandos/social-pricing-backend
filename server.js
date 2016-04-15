@@ -4,10 +4,8 @@ var xnconfig = require('nodejsconfig');
 var data = fs.readFileSync(__dirname+'/config/config.properties', 'UTF8');
 config = xnconfig.parse(process.env.NODE_ENV || 'development', data);
 console.log("Env: " + config.env);
-var esClient = new es.Client({host: config.elastic_host, log:'info'});
-var db = new (require('./services/datastorage'))(esClient);
-var marketService = new (require('./services/market_service'))(db);
 var express = require('express');
+var markets = require('./routes/markets');
 var app = express(),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override'),
@@ -28,44 +26,10 @@ app.get('/', function(req, res) {
 });
 
 //Pruebas
-app.post('/market', function(req, res) {
-  var market = req.body;
-  db.saveMarket(market).then(function(data) {
-      res.status(201).send(data);
-  });
-});
-app.get('/market/name/:name', function(req, res) {
-  marketService.searchByName(req.params.name).then(
-      function(data) {
-          res.send(data);
-      },
-      function(error) {
-          res.status(400).send(error);
-      }
-  ) ;
-});
-
-app.get('/market/address', function(req, res) {
-    marketService.searchByAddress(req.query.address, req.query.locale).then(
-        function(data) {
-            res.send(data);
-        },
-        function(error) {
-            res.status(400).send(error);
-        }
-    ) ;
-});
-
-app.get('/market/geo', function(req, res) {
-    marketService.searchByGeo(req.query.lat, req.query.lon).then(
-        function(data) {
-            res.send(data);
-        },
-        function(error) {
-            res.status(400).send(error);
-        }
-    ) ;
-});
+app.post('/market', markets.save);
+app.get('/market/name/:name', markets.searchByName);
+app.get('/market/address', markets.searchByAddress);
+app.get('/market/geo', markets.searchByGeo);
 
 var server = http.createServer(app);
 server.listen(app.get('port'), function () {
