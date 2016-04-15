@@ -6,6 +6,9 @@ var shouldFail;
 var shouldReturnSome;
 
 var esMock = {
+    indices: {
+      create: function(){}
+    },
     create: function(data) {
         return {
             then: function(success, fail) {
@@ -152,7 +155,7 @@ describe('Data Storage', function() {
                             assert.equal(markets[0].id, '1');
                             assert.equal(markets[0].name, 'Carrefour');
                             assert.equal(markets[0].address, 'Av. La Plata 15555');
-                            assert.equal(markets[0].normalizedAddress, 'av. La Plata 15555');
+                            assert.equal(markets[0].normalizedAddress, 'av. la plata 15555');
                             assert.equal(markets[0].geo.lat, -34.1667);
                             assert.equal(markets[0].geo.lon, -58.1144);
                         }, function(error) { assert.ok(false);}

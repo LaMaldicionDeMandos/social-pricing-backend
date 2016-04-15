@@ -12,7 +12,7 @@ function Market(dto) {
 }
 
 Market.normalizeAddress = function(address) {
-    return address.replace(er, 'av. ');
+    return address.replace(er, 'av. ').toLowerCase();
 }
 
 exports.Market = Market;
