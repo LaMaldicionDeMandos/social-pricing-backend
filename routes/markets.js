@@ -5,14 +5,16 @@ var es = require('elasticsearch');
 var esClient = new es.Client({host: config.elastic_host, log:'info'});
 var db = new (require('../services/datastorage'))(esClient);
 var marketService = new (require('../services/market_service'))(db);
-exports.save = function(req, res) {
+var router = require('express').Router();
+
+var save = function(req, res) {
     var market = req.body;
     db.saveMarket(market).then(function(data) {
         res.status(201).send(data);
     });
 };
 
-exports.searchByName = function(req, res) {
+var searchByName = function(req, res) {
     marketService.searchByName(req.params.name).then(
         function(data) {
             res.send(data);
@@ -22,7 +24,7 @@ exports.searchByName = function(req, res) {
         }
     ) ;
 };
-exports.searchByAddress = function(req, res) {
+var searchByAddress = function(req, res) {
     marketService.searchByAddress(req.query.address, req.query.locale).then(
         function(data) {
             res.send(data);
@@ -32,7 +34,7 @@ exports.searchByAddress = function(req, res) {
         }
     ) ;
 };
-exports.searchByGeo = function(req, res) {
+var searchByGeo = function(req, res) {
     marketService.searchByGeo(req.query.lat, req.query.lon).then(
         function(data) {
             res.send(data);
@@ -42,3 +44,10 @@ exports.searchByGeo = function(req, res) {
         }
     ) ;
 };
+
+router.post(save);
+router.get('/name:name', searchByName);
+router.get('/address', searchByAddress);
+router.get('/geo', searchByGeo);
+
+module.exports = router;

@@ -1,5 +1,4 @@
 var fs = require('fs');
-var es = require('elasticsearch');
 var xnconfig = require('nodejsconfig');
 var data = fs.readFileSync(__dirname+'/config/config.properties', 'UTF8');
 config = xnconfig.parse(process.env.NODE_ENV || 'development', data);
@@ -26,10 +25,7 @@ app.get('/', function(req, res) {
 });
 
 //Pruebas
-app.post('/market', markets.save);
-app.get('/market/name/:name', markets.searchByName);
-app.get('/market/address', markets.searchByAddress);
-app.get('/market/geo', markets.searchByGeo);
+app.use('/market', markets);
 
 var server = http.createServer(app);
 server.listen(app.get('port'), function () {
