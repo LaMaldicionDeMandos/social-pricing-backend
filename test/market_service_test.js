@@ -96,7 +96,7 @@ describe('Market Service', function() {
                     "id": "a21e01a3-8913-4fc5-a777-3bbd3027396b",
                     "name": "Crrefour",
                     "address": "Av. La plata 15555",
-                    "normalizedAddress": "av. la plata 15555",
+                    "normalizedAddress": "av. la plata 15500",
                     "locale": "Quilmes Oeste",
                     "geo": {
                         "lat": -34.1667,
@@ -110,7 +110,7 @@ describe('Market Service', function() {
                         assert.equal(markets[0].id, 'a21e01a3-8913-4fc5-a777-3bbd3027396b');
                         assert.equal(markets[0].name, 'Crrefour');
                         assert.equal(markets[0].address, 'Av. La plata 15555');
-                        assert.equal(markets[0].normalizedAddress, 'av. la plata 15555');
+                        assert.equal(markets[0].normalizedAddress, 'av. la plata 15500');
                         assert.equal(markets[0].locale, 'Quilmes Oeste');
                         assert.equal(markets[0].geo.lat, -34.1667);
                         assert.equal(markets[0].geo.lon, -58.1144);
@@ -125,7 +125,7 @@ describe('Market Service', function() {
                         assert.equal(markets[0].id, 'a21e01a3-8913-4fc5-a777-3bbd3027396b');
                         assert.equal(markets[0].name, 'Crrefour');
                         assert.equal(markets[0].address, 'Av. La plata 15555');
-                        assert.equal(markets[0].normalizedAddress, 'av. la plata 15555');
+                        assert.equal(markets[0].normalizedAddress, 'av. la plata 15500');
                         assert.equal(markets[0].locale, 'Quilmes Oeste');
                         assert.equal(markets[0].geo.lat, -34.1667);
                         assert.equal(markets[0].geo.lon, -58.1144);
@@ -140,7 +140,7 @@ describe('Market Service', function() {
                         assert.equal(markets[0].id, 'a21e01a3-8913-4fc5-a777-3bbd3027396b');
                         assert.equal(markets[0].name, 'Crrefour');
                         assert.equal(markets[0].address, 'Av. La plata 15555');
-                        assert.equal(markets[0].normalizedAddress, 'av. la plata 15555');
+                        assert.equal(markets[0].normalizedAddress, 'av. la plata 15500');
                         assert.equal(markets[0].locale, 'Quilmes Oeste');
                         assert.equal(markets[0].geo.lat, -34.1667);
                         assert.equal(markets[0].geo.lon, -58.1144);
