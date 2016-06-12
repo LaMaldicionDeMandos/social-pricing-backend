@@ -4,6 +4,7 @@
 var Model =  require('../model/model');
 var Market = Model.Market;
 var ProductInstance = Model.ProductInstance;
+var Product = Model.Product;
 var q = require('q');
 var uuid = require('uuid');
 
@@ -122,6 +123,18 @@ function DB(esClient) {
             function(result) {
                 instance.id = result._id;
                 def.resolve(instance);
+            },
+            function(error) {
+                def.reject(error);
+            });
+        return def.promise;
+    };
+    this.saveProduct = function(dto) {
+        var def = q.defer();
+        var product = new Product(dto);
+        esClient.create({index: 'product', type: 'Product', id: product.code, body: product}).then(
+            function(result) {
+                def.resolve(product);
             },
             function(error) {
                 def.reject(error);

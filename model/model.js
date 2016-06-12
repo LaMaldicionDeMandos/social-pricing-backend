@@ -13,6 +13,17 @@ function ProductInstance(dto) {
 
 exports.ProductInstance = ProductInstance;
 
+function Product(dto) {
+    this.code = dto.code;
+    this.tradeMark = dto.tradeMark;
+    this.subtype = dto.subtype;
+    this.measure = dto.measure;
+    this.measureType = dto.measureType;
+    this.description = dto.description;
+}
+
+exports.Product = Product;
+
 function Market(dto) {
     this.id = dto.id;
     this.name = dto.name;
