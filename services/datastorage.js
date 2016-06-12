@@ -115,6 +115,17 @@ function DB(esClient) {
             return new clazz(dto);
         });
     };
+    var search = function(query, clazz) {
+        var def = q.defer();
+        esClient.search(query).then(
+            function(result) {
+                def.resolve(mapResults(result, clazz));
+            },
+            function(error) {
+                def.reject(error);
+            });
+        return def.promise;
+    };
     this.saveProductInstance = function(dto) {
         var def = q.defer();
         dto.id = uuid.v4();
@@ -156,7 +167,6 @@ function DB(esClient) {
         return def.promise;
     };
     this.searchProductInstancesByCode = function(code) {
-        var def = q.defer();
         var query = {
             index: 'productinstance',
             body: {
@@ -169,17 +179,9 @@ function DB(esClient) {
                 }
             }
         };
-        esClient.search(query).then(
-            function(result) {
-                def.resolve(mapResults(result, ProductInstance));
-            },
-            function(error) {
-                def.reject(error);
-            });
-        return def.promise;
+        return search(query, ProductInstance);
     };
     this.searchProductByCode = function(code) {
-        var def = q.defer();
         var query = {
             index: 'product',
             body: {
@@ -192,17 +194,40 @@ function DB(esClient) {
                 }
             }
         };
-        esClient.search(query).then(
-            function(result) {
-                def.resolve(mapResults(result, Product));
-            },
-            function(error) {
-                def.reject(error);
-            });
-        return def.promise;
+        return search(query, Product);
+    };
+    this.searchProductInstanceByCodeAndMarket = function(code, marketId) {
+        var query = {
+            index: 'productinstance',
+            body: {
+                query: {
+                    bool: {
+                        must: [
+                            {
+                                match: {
+                                    code: {
+                                        query: code,
+                                        operator: 'and'
+                                    }
+                                }
+                            },
+                            {
+                                match: {
+                                    market: {
+                                        query: marketId,
+                                        operator: 'and'
+                                    }
+                                }
+                            }
+                        ]
+                    }
+
+                }
+            }
+        };
+        return search(query, ProductInstance);
     };
     this.searchMarketByName = function(name) {
-        var def = q.defer();
         var query = {
             index: 'market',
             body: {
@@ -217,17 +242,9 @@ function DB(esClient) {
                 }
             }
         };
-        esClient.search(query).then(
-            function(result) {
-                def.resolve(mapResults(result, Market));
-            },
-            function(error) {
-                def.reject(error);
-            });
-        return def.promise;
+        return search(query, Market);
     };
     this.searchMarketByAddress = function(address, locale) {
-        var def = q.defer();
         var normalized = Market.normalizeAddress(address);
         var query = {
             index: 'market',
@@ -259,17 +276,9 @@ function DB(esClient) {
                 }
             }
         };
-        esClient.search(query).then(
-            function(result) {
-                def.resolve(mapResults(result, Market));
-            },
-            function(error) {
-                def.reject(error);
-            });
-        return def.promise;
+        return search(query, Market);
     };
-    this.searchMarketByGeo = function(lat, lon) {
-        var def = q.defer();
+    this.searchMarketByGeoAndDistance = function(lat, lon, distance) {
         var query = {
             index: 'market',
             body: {
@@ -280,7 +289,7 @@ function DB(esClient) {
                         },
                         filter: {
                             geo_distance: {
-                                distance: '100m',
+                                distance: distance,
                                 geo: {
                                     lat: lat,
                                     lon: lon
@@ -291,14 +300,10 @@ function DB(esClient) {
                 }
             }
         };
-        esClient.search(query).then(
-            function(result) {
-                def.resolve(mapResults(result, Market));
-            },
-            function(error) {
-                def.reject(error);
-            });
-        return def.promise;
+        return search(query, Market);
+    };
+    this.searchMarketByGeo = function(lat, lon) {
+        return this.searchMarketByGeoAndDistance(lat, lon, '100m');
     };
 
 }
