@@ -45,8 +45,8 @@ var searchByGeo = function(req, res) {
     ) ;
 };
 
-router.post(save);
-router.get('/name:name', searchByName);
+router.post('/',save);
+router.get('/name/:name', searchByName);
 router.get('/address', searchByAddress);
 router.get('/geo', searchByGeo);
 

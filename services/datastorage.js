@@ -1,10 +1,11 @@
 /**
  * Created by boot on 3/18/16.
  */
-var Market = require('../model/model').Market;
+var Model =  require('../model/model');
+var Market = Model.Market;
+var ProductInstance = Model.ProductInstance;
 var q = require('q');
 var uuid = require('uuid');
-
 
 function DB(esClient) {
     var marketSchema = {
@@ -42,13 +43,91 @@ function DB(esClient) {
             }
         }
     };
+    var productSchema = {
+        index: 'product',
+        body: {
+            mappings: {
+                Product: {
+                    properties: {
+                        code: {
+                            type: 'string',
+                            index: 'not_analyzed'
+                        },
+                        tradeMark: {
+                            type: 'string',
+                            index: 'not_analyzed'
+                        },
+                        subtype: {
+                            type: 'string',
+                            index: 'not_analyzed'
+                        },
+                        measure: {
+                            type: 'float',
+                            index: 'not_analyzed'
+                        },
+                        measureType: {
+                            type: 'string',
+                            index: 'not_analyzed'
+                        },
+                        description: {
+                            type: 'string',
+                            index: 'not_analyzed'
+                        }
+                    }
+                }
+            }
+        }
+    };
+    var productInstanceSchema = {
+        index: 'productinstance',
+        body: {
+            mappings: {
+                ProductInstance: {
+                    properties: {
+                        id: {
+                            type: 'string',
+                            index: 'not_analyzed'
+                        },
+                        code: {
+                            type: 'string',
+                            index: 'not_analyzed'
+                        },
+                        price: {
+                            type: 'float',
+                            index: 'not_analyzed'
+                        },
+                        market: {
+                            type: 'string',
+                            index: 'not_analyzed'
+                        }
+                    }
+                }
+            }
+        }
+    };
     esClient.indices.create(marketSchema);
-    var mapResults = function(results) {
+    esClient.indices.create(productSchema);
+    esClient.indices.create(productInstanceSchema);
+    var mapResults = function(results, clazz) {
         return results.hits.hits.map(function(hit) {
             var dto = hit._source;
-            return new Market(dto);
+            return new clazz(dto);
         });
-    }
+    };
+    this.saveProductInstance = function(dto) {
+        var def = q.defer();
+        dto.id = uuid.v4();
+        var instance = new ProductInstance(dto);
+        esClient.create({index: 'productinstance', type: 'ProductInstance', id: instance.id, body: instance}).then(
+            function(result) {
+                instance.id = result._id;
+                def.resolve(instance);
+            },
+            function(error) {
+                def.reject(error);
+            });
+        return def.promise;
+    };
     this.saveMarket = function(dto) {
         var def = q.defer();
         dto.id = uuid.v4();
@@ -81,7 +160,7 @@ function DB(esClient) {
         };
         esClient.search(query).then(
             function(result) {
-                def.resolve(mapResults(result));
+                def.resolve(mapResults(result, Market));
             },
             function(error) {
                 def.reject(error);
@@ -123,7 +202,7 @@ function DB(esClient) {
         };
         esClient.search(query).then(
             function(result) {
-                def.resolve(mapResults(result));
+                def.resolve(mapResults(result, Market));
             },
             function(error) {
                 def.reject(error);
@@ -155,7 +234,7 @@ function DB(esClient) {
         };
         esClient.search(query).then(
             function(result) {
-                def.resolve(mapResults(result));
+                def.resolve(mapResults(result, Market));
             },
             function(error) {
                 def.reject(error);

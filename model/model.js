@@ -4,6 +4,15 @@
 var er = /av(enida)?\.? /gi;
 var numEr = /[0-9]+/;
 var gNumErr = /([0-9]+)([0-9][0-9])/
+function ProductInstance(dto) {
+    this.id = dto.id;
+    this.code = dto.code;
+    this.market = dto.market;
+    this.price = dto.price;
+}
+
+exports.ProductInstance = ProductInstance;
+
 function Market(dto) {
     this.id = dto.id;
     this.name = dto.name;
