@@ -178,6 +178,29 @@ function DB(esClient) {
             });
         return def.promise;
     };
+    this.searchProductByCode = function(code) {
+        var def = q.defer();
+        var query = {
+            index: 'product',
+            body: {
+                query: {
+                    match: {
+                        code: {
+                            query: code
+                        }
+                    }
+                }
+            }
+        };
+        esClient.search(query).then(
+            function(result) {
+                def.resolve(mapResults(result, Product));
+            },
+            function(error) {
+                def.reject(error);
+            });
+        return def.promise;
+    };
     this.searchMarketByName = function(name) {
         var def = q.defer();
         var query = {
