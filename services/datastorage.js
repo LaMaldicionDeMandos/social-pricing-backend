@@ -97,8 +97,12 @@ function DB(esClient) {
                             type: 'float',
                             index: 'not_analyzed'
                         },
-                        market: {
+                        marketId: {
                             type: 'string',
+                            index: 'not_analyzed'
+                        },
+                        lastUpdate: {
+                            type: 'date',
                             index: 'not_analyzed'
                         }
                     }

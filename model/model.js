@@ -7,8 +7,9 @@ var gNumErr = /([0-9]+)([0-9][0-9])/
 function ProductInstance(dto) {
     this.id = dto.id;
     this.code = dto.code;
-    this.market = dto.market;
+    this.marketId = dto.marketId;
     this.price = dto.price;
+    this.lastUpdate = dto.lastUpdate;
 }
 
 exports.ProductInstance = ProductInstance;
