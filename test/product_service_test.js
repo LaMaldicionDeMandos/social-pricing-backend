@@ -19,7 +19,8 @@ describe('Product Service', function() {
     };
     var dbMock = {
         searchProductInstancesByCode: search,
-        searchProductByCode: search
+        searchProductByCode: search,
+        searchProductInstanceByCodeAndMarket: search
     };
     var service = new (require('../services/product_service'))(dbMock);
     describe('Searching productInstances', function () {
@@ -38,6 +39,61 @@ describe('Product Service', function() {
                     assert.fail();
                 });
         });
+    });
+    describe('Searching productInstances near market', function () {
+        var dbMock2, service;
+        beforeEach(function() {
+            dbMock2 = {
+                searchMarketById: function(id) {
+                    return {
+                        then: function (success, error) {
+                            success([{id: 'market1'}]);
+                        }
+                    };
+                },
+                searchMarketByGeoAndDistance: function(lat, lon, distance) {
+                    return {
+                        then: function (success, error) {
+                            success([{id: 'market2'},{id: 'market3'}]);
+                        }
+                    };
+                },
+                searchProductByCode: function (code) {
+                    return {
+                        then: function (success, error) {
+                            success([{code: 'product1'}]);
+                        }
+                    };
+                },
+                searchProductInstanceByCodeAndMarket: function (code, marketId) {
+                    return {
+                        then: function (success, error) {
+                            if(maerketId == 'market1')
+                                success([{code: 'product1', market: {id:'market1'}}]);
+                            else if (marketId == 'market2') {
+                                success([{code: 'product1', market: {id:'market2'}}]);
+                            } else {
+                                success([{code: 'product1', market: {id:'market3'}}]);
+                            }
+                        }
+                    };
+                }
+            };
+            service = new (require('../services/product_service'))(dbMock2);
+        });
+        it('should return a list of product instances', function() {
+            return service.searchProductsNearMarket('product1', 'market1').then(
+                function(product) {
+                    assert.equal(product.spec.code, 'product1');
+                    assert.equal(product.marketProduct.market.id, 'market1');
+                    assert.equal(product.marketProduct.near[0].market.id, 'market2');
+                    assert.equal(product.marketProduct.near[1].market.id, 'market3');
+                },
+                function() {
+                    assert.fail();
+                });
+        });
+        it('should ')
     });
     describe('Search product', function () {
         describe('found a product', function(){

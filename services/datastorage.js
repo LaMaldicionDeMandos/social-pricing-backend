@@ -227,6 +227,21 @@ function DB(esClient) {
         };
         return search(query, ProductInstance);
     };
+    this.searchMarketById = function(id) {
+        var query = {
+            index: 'market',
+            body: {
+                query: {
+                    match: {
+                        id: {
+                            query: id
+                        }
+                    }
+                }
+            }
+        };
+        return search(query, Market);
+    };
     this.searchMarketByName = function(name) {
         var query = {
             index: 'market',
@@ -303,7 +318,7 @@ function DB(esClient) {
         return search(query, Market);
     };
     this.searchMarketByGeo = function(lat, lon) {
-        return this.searchMarketByGeoAndDistance(lat, lon, '100m');
+        return this.searchMarketByGeoAndDistance(lat, lon, '150m');
     };
 
 }
