@@ -5,6 +5,7 @@ config = xnconfig.parse(process.env.NODE_ENV || 'development', data);
 console.log("Env: " + config.env);
 var express = require('express');
 var markets = require('./routes/markets');
+var products = require('./routes/products');
 var app = express(),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override'),
@@ -24,8 +25,8 @@ app.get('/', function(req, res) {
   res.sendStatus(200);
 });
 
-//Pruebas
 app.use('/market', markets);
+app.use('/product', products);
 
 var server = http.createServer(app);
 server.listen(app.get('port'), function () {
