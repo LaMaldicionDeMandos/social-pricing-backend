@@ -2,65 +2,7 @@
  * Created by boot on 6/13/16.
  */
 var q = require('q');
-/*
-var values = [0, 1, 2];
 
-var map = function(value) {
-    var def = q.defer();
-    console.log('Map: ' + value);
-    setTimeout(function() {
-        var text;
-        if (value == 0) text = 'zero';
-        if (value == 1) text =  'one';
-        if (value == 2) text = 'two';
-        console.log('Map: ' + value + ' to ' + text);
-        def.resolve(text);
-    }, 500);
-    return def.promise;
-};
-
-var getObject = function() {
-    var def = q.defer();
-    console.log('Get Object');
-    setTimeout(function() {
-        console.log('Call Get Object');
-        def.resolve({});
-    }, 1200);
-    return def.promise;
-};
-
-var setName = function(object) {
-    var def = q.defer();
-    console.log('Set Name');
-    setTimeout(function() {
-        console.log('Call Set Name');
-        object.name = 'name';
-        def.resolve(object);
-    }, 300);
-    return def.promise;
-};
-
-var getValues = function(object) {
-    var def = q.defer();
-    console.log('Get Values');
-    setTimeout(function() {
-        console.log('Call Get Values');
-        def.resolve({object: object, values:values});
-    }, 800);
-    return def.promise;
-};
-
-getObject().then(setName).then(getValues).then(function(object) {
-    var def = q.defer();
-    q.all(object.values.map(map)).done(function(v) {
-        object.object.values = v;
-        def.resolve(object.object);
-    });
-    return def.promise;
-}).then(function(result) {
-    console.log(JSON.stringify(result));
-});
-*/
 var searchProduct = function(code) {
     var def = q.defer();
     setTimeout(function() {

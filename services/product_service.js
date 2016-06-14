@@ -8,27 +8,37 @@ function Service(db) {
     };
     this.searchProductsNearMarket = function(code, marketId) {
         var def = q.defer();
-        var product = {};
-        var getSpec = function(spec) {
-            var def = q.defer();
-            product.spec = spec;
-            def.resolve(product);
-            return def.promise;
+        var result = {};
+        var findMarket = function(instance, markets) {
+            return markets[markets.findIndex(function(market) {
+                return market.id == instance.marketId;
+            })];
         };
-        var getMarket = function(markets) {
-            var def = q.defer();
-            if (!markets || markets.length == 0) {
-                def.reject();
-            } else {
-                def.resolve(markets[0]);
-            }
-            return def.promise;
+        var findInstance = function(marketId, instances) {
+            return instances[instances.findIndex(function(instance) {
+                return instance.marketId == marketId;
+            })];
         };
-
-        var getNearProducts = function(markets) {
-
-        }
-
+        q.all([this.searchOne(code), db.searchMarketById(marketId)]).done(function(values) {
+            result.spec = values[0];
+            db.searchMarketByGeoAndDistance(values[1].lat, values[1].lon, '10km').then(function(markets) {
+                q.all(markets.map(function(market) {
+                    return db.searchProductInstanceByCodeAndMarket(code, market.id);
+                })).done(function(instances) {
+                    instances = instances.map(function(arr) {
+                            return arr[0];
+                    });
+                    instances.forEach(function(instance) {
+                        instance.market = findMarket(instance, markets);
+                    });
+                    var theInstance = findInstance(marketId, instances);
+                    instances.splice(instances.indexOf(theInstance), 1);
+                    result.localProduct = theInstance;
+                    result.near = instances;
+                    def.resolve(result);
+                });
+            });
+        });
         return def.promise;
     };
     this.searchOne = function(code) {

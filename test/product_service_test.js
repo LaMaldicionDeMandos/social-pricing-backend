@@ -54,7 +54,7 @@ describe('Product Service', function() {
                 searchMarketByGeoAndDistance: function(lat, lon, distance) {
                     return {
                         then: function (success, error) {
-                            success([{id: 'market2'},{id: 'market3'}]);
+                            success([{id:'market1'},{id: 'market2'},{id: 'market3'}]);
                         }
                     };
                 },
@@ -68,12 +68,12 @@ describe('Product Service', function() {
                 searchProductInstanceByCodeAndMarket: function (code, marketId) {
                     return {
                         then: function (success, error) {
-                            if(maerketId == 'market1')
-                                success([{code: 'product1', market: {id:'market1'}}]);
+                            if(marketId == 'market1')
+                                success([{code: 'product1', marketId: 'market1'}]);
                             else if (marketId == 'market2') {
-                                success([{code: 'product1', market: {id:'market2'}}]);
+                                success([{code: 'product1', marketId: 'market2'}]);
                             } else {
-                                success([{code: 'product1', market: {id:'market3'}}]);
+                                success([{code: 'product1', marketId:'market3'}]);
                             }
                         }
                     };
@@ -85,15 +85,15 @@ describe('Product Service', function() {
             return service.searchProductsNearMarket('product1', 'market1').then(
                 function(product) {
                     assert.equal(product.spec.code, 'product1');
-                    assert.equal(product.marketProduct.market.id, 'market1');
-                    assert.equal(product.marketProduct.near[0].market.id, 'market2');
-                    assert.equal(product.marketProduct.near[1].market.id, 'market3');
+                    assert.equal(product.localProduct.market.id, 'market1');
+                    assert.equal(product.near.length, 2);
+                    assert.equal(product.near[0].market.id, 'market2');
+                    assert.equal(product.near[1].market.id, 'market3');
                 },
                 function() {
                     assert.fail();
                 });
         });
-        it('should ')
     });
     describe('Search product', function () {
         describe('found a product', function(){
