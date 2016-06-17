@@ -14,6 +14,7 @@ describe('Product Service', function() {
                 } else {
                     success(shouldReturn);
                 }
+                return this;
             }
         }
     };
@@ -25,7 +26,7 @@ describe('Product Service', function() {
     var service = new (require('../services/product_service'))(dbMock);
     describe('Searching productInstances', function () {
         beforeEach(function() {
-            shouldReturn.push({code:'aaa'});
+            shouldReturn.push({code:'aaa', makeUpdate: function(){}});
         });
         afterEach(function() {
             shouldReturn = [];
@@ -69,12 +70,13 @@ describe('Product Service', function() {
                     return {
                         then: function (success, error) {
                             if(marketId == 'market1')
-                                success([{code: 'product1', marketId: 'market1'}]);
+                                success([{code: 'product1', marketId: 'market1', makeUpdate:function(){}}]);
                             else if (marketId == 'market2') {
-                                success([{code: 'product1', marketId: 'market2'}]);
+                                success([{code: 'product1', marketId: 'market2', makeUpdate:function(){}}]);
                             } else {
-                                success([{code: 'product1', marketId:'market3'}]);
+                                success([{code: 'product1', marketId:'market3', makeUpdate:function(){}}]);
                             }
+                            return this;
                         }
                     };
                 }

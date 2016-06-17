@@ -2,9 +2,15 @@
  * Created by boot on 6/12/16.
  */
 var q = require('q');
+var makeUpdateToAll = function(instances) {
+    var now = new Date();
+    instances.forEach(function(instance) {
+        instance.makeUpdate(now);
+    });
+};
 function Service(db) {
     this.searchInstances = function(code) {
-        return db.searchProductInstancesByCode(code);
+        return db.searchProductInstancesByCode(code).then(makeUpdateToAll);
     };
     this.searchProductsNearMarket = function(code, marketId) {
         var def = q.defer();
@@ -23,7 +29,7 @@ function Service(db) {
             result.spec = values[0];
             db.searchMarketByGeoAndDistance(values[1].lat, values[1].lon, '10km').then(function(markets) {
                 q.all(markets.map(function(market) {
-                    return db.searchProductInstanceByCodeAndMarket(code, market.id);
+                    return db.searchProductInstanceByCodeAndMarket(code, market.id).then(makeUpdateToAll);
                 })).done(function(instances) {
                     instances = instances.map(function(arr) {
                             return arr[0];
