@@ -13,7 +13,7 @@ var searchNear = function(req, res) {
             if (data.spec) {
                 res.send(data);
             } else {
-                res.send(404);
+                res.sendStatus(404);
             }
         },
         function(error) {
