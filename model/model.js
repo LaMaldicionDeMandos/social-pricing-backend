@@ -3,13 +3,34 @@
  */
 var er = /av(enida)?\.? /gi;
 var numEr = /[0-9]+/;
-var gNumErr = /([0-9]+)([0-9][0-9])/
+var gNumErr = /([0-9]+)([0-9][0-9])/;
+var MILISECONDS = 1000;
+var SECONDS = MILISECONDS*60;
+var MINUTES = SECONDS*60;
+var HOURS = MINUTES*24;
 function ProductInstance(dto) {
     this.id = dto.id;
     this.code = dto.code;
     this.marketId = dto.marketId;
     this.price = dto.price;
     this.lastUpdate = dto.lastUpdate;
+    var that = this;
+    var updateValues = function(value, unit) {
+        that.updateValue = value;
+        that.updateUnit = unit;
+    };
+    this.makeUpdate = function(_now) {
+        var diff = _now.getTime() - this.lastUpdate.getTime();
+        var seconds = Math.floor(diff/MILISECONDS);
+        if (seconds < 60) updateValues(seconds, 's');
+        var minutes = Math.floor(diff/SECONDS);
+        if (minutes < 60 && minutes > 0) updateValues(minutes, 'm');
+        var hours = Math.floor(diff/MINUTES);
+        if (hours < 24 && hours > 0) updateValues(hours, 'h');
+        var days = Math.floor(diff/HOURS);
+        if (days > 0) updateValues(days, 'd');
+
+    }
 }
 
 exports.ProductInstance = ProductInstance;
